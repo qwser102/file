@@ -1,0 +1,6 @@
+
+curl -k --location --request POST 'http://127.0.0.1:8080/dex/token?username=admin@cpaas.io&password=07Apples@1&scope=openid%20profile%20offline_access%20email%20groups%20ext&conn_id=ldap-test' \
+--form 'client_id="example-app"' \
+--form 'client_secret="ZXhhbXBsZS1hcHAtc2VjcmV0"' \
+--form 'grant_type="password"' \
+--form 'conn_id="acp-ldap"'
