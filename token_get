@@ -4,3 +4,13 @@ curl -k --location --request POST 'http://127.0.0.1:8080/dex/token?username=admi
 --form 'client_secret="ZXhhbXBsZS1hcHAtc2VjcmV0"' \
 --form 'grant_type="password"' \
 --form 'conn_id="acp-ldap"'
+
+
+client_id	oidc client id
+client_secret	oidc client secret
+grant_type	授权类型（password）
+
+username	用户唯一标识
+password	用户密码
+scope	申请用户信息（openid profile offline_access email groups ext）
+conn_id	登录connector ID，可选参数，默认值为local，本地用户
