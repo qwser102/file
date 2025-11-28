@@ -1,12 +1,8 @@
 apiVersion: template.alauda.io/v1
 kind: Template
 metadata:
-  creationTimestamp: 2025-05-27T09:47:40Z
-  generation: 6
   name: namespace-quota-limit
   namespace: cpaas-system
-  resourceVersion: "26588497"
-  uid: 185d1f8f-0fa4-4a4b-8bca-61d6ff5fe9b3
 objects:
   - apiVersion: v1
     kind: Namespace
