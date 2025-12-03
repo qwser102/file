@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: helloworld-sts
+  namespace: test-ns2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service.cpaas.io/name: helloworld-sts
+    spec:
+      containers:
+        - name: helloworld-sts
+          image: harbor.acpglobal.uat.dbs.com/automation-test/qaimages:helloworld
+          securityContext:
+            runAsUser: 0
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          volumeMounts:
+            - mountPath: /root
+              name: helloworld-sts
+      terminationGracePeriodSeconds: 30
+      nodeSelector:
+        monitor: ""
+      tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/infra
+          operator: Exists
+  updateStrategy: {}
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: helloworld-sts
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: nfs-sc-monitor
+        volumeMode: Filesystem
+  selector:
+    matchLabels:
+      service.cpaas.io/name: helloworld-sts
+  serviceName: helloworld-sts
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: helloworld-sts
+  name: helloworld-sts
+  namespace: test-ns2
+spec:
+  ports:
+  - name: 80-80
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: helloworld-sts
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: helloworld-sts
+  namespace: test-ns2
+spec:
+  ingressClassName: ingress-nginx-operator-ingress-instance1
+  rules:
+  - host: helloworld-sts.acpsit1.uat.dbs.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: helloworld-sts
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
