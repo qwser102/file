@@ -2,8 +2,8 @@
 
 # === 配置项 ===
 REGISTRY_URL="https://your-registry.example.com"   # 🔁 修改为你的 registry 地址（支持 HTTP/HTTPS）
-REGISTRY_USER="your-username"                      # 🔁 修改为用户名
-REGISTRY_PASS="your-password"                      # 🔁 修改为密码
+REGISTRY_USER="your-username"                      # 🔁 修改为用户名，使用admin
+REGISTRY_PASS="your-password"                      # 🔁 修改为密码，通过kubectl get secret获取
 PAGE_SIZE=100
 
 AUTH_HEADER="Authorization: Basic $(echo -n "$REGISTRY_USER:$REGISTRY_PASS" | base64)"
