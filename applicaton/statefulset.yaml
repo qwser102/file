@@ -3,6 +3,8 @@ kind: StatefulSet
 metadata:
   name: helloworld-sts
   namespace: test-ns2
+  labels:
+    app: helloworld-sts
 spec:
   replicas: 1
   template:
@@ -67,7 +69,7 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: helloworld-sts
+    service.cpaas.io/name: helloworld-sts
   type: ClusterIP
 status:
   loadBalancer: {}
