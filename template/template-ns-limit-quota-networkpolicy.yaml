@@ -51,6 +51,7 @@ objects:
     kind: NetworkPolicy
     metadata:
       name: deny-by-default
+      namespace: ${NAMESPACE}
     spec:
       ingress: []
       podSelector: null
@@ -58,6 +59,7 @@ objects:
     kind: NetworkPolicy
     metadata:
       name: allow-same-namespace
+      namespace: ${NAMESPACE}
     spec:
       ingress:
       - from:
@@ -67,6 +69,7 @@ objects:
     kind: NetworkPolicy
     metadata:
       name: allow-from-ingress
+      namespace: ${NAMESPACE}
     spec:
       ingress:
       - from:
@@ -80,6 +83,7 @@ objects:
     kind: NetworkPolicy
     metadata:
       name: allow-from-monitoring
+      namespace: ${NAMESPACE}
     spec:
       ingress:
       - from:
