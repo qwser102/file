@@ -1,0 +1,104 @@
+apiVersion: template.alauda.io/v1
+kind: Template
+objects:
+  - apiVersion: v1
+    kind: Namespace
+    metadata:
+      labels:
+        cpaas.io/cluster: ${CLUSTER}
+        cpaas.io/project: ${PROJECT}
+        pod-security.kubernetes.io/audit: baseline
+        pod-security.kubernetes.io/enforce: baseline
+        pod-security.kubernetes.io/warn: baseline
+        security.cpaas.io/enabled: "true"
+      name: ${NAMESPACE}
+    spec:
+      finalizers:
+        - kubernetes
+  - apiVersion: v1
+    kind: ResourceQuota
+    metadata:
+      name: default
+      namespace: ${NAMESPACE}
+    spec:
+      hard:
+        limits.cpu: "10"
+        limits.memory: 20Gi
+        pods: "1000"
+        requests.cpu: "10"
+        requests.memory: 20Gi
+  - apiVersion: v1
+    kind: LimitRange
+    metadata:
+      name: default
+      namespace: ${NAMESPACE}
+    spec:
+      limits:
+        - default:
+            cpu: 500m
+            memory: 512Mi
+          defaultRequest:
+            cpu: 250m
+            memory: 256Mi
+          max:
+            cpu: "8"
+            memory: 16Gi
+          min:
+            cpu: 100m
+            memory: 128Mi
+          type: Container
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: deny-by-default
+    spec:
+      ingress: []
+      podSelector: null
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-same-namespace
+    spec:
+      ingress:
+      - from:
+        - podSelector: {}
+      podSelector: null
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-from-ingress
+    spec:
+      ingress:
+      - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx-operator
+      podSelector: {}
+      policyTypes:
+      - Ingress
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-from-monitoring
+    spec:
+      ingress:
+      - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cpaas-system
+      podSelector: {}
+      policyTypes:
+      - Ingress
+parameters:
+  - description: The name of the namespace
+    displayName: namespaceName
+    name: NAMESPACE
+    required: true
+  - description: The name of the project which the namespace belongs to
+    displayName: projectName
+    name: PROJECT
+    required: true
+  - description: The name of the cluster which the namespace belongs to
+    displayName: clusterName
+    name: CLUSTER
+    required: true
