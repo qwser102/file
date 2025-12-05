@@ -38,6 +38,9 @@ $ ac create -f ./pod.yaml
 # Create a pod based on the JSON passed into stdin
 $ cat pod.json | ac create -f -
 
+# create namespace with template
+ac config use-cluster <cluster name>
+ac process -f <ns-template.yaml> -p NAMESPACE=<namespace name> -p PROJECT=<project name> -p CLUSTER=<cluster name> |ac apply -f -
 
 # Assign the namespace-developer-system role to user alice in project my-project
 $ ac adm policy add-namespace-role-to-user namespace-developer-system alice --namespace my-namespace --project my-project --cluster business-1
