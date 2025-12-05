@@ -39,10 +39,11 @@ $ ac create -f ./pod.yaml
 $ cat pod.json | ac create -f -
 
 # create namespace with template
-ac config use-cluster <cluster name>
-ac process -f <ns-template.yaml> -p NAMESPACE=<namespace name> -p PROJECT=<project name> -p CLUSTER=<cluster name> |ac apply -f -
+$ ac config use-cluster <cluster name>
+$ ac process -f <ns-template.yaml> -p NAMESPACE=<namespace name> -p PROJECT=<project name> -p CLUSTER=<cluster name> |ac apply -f -
 
 # Assign the namespace-developer-system role to user alice in project my-project
+$ ac config use-cluster global
 $ ac adm policy add-namespace-role-to-user namespace-developer-system alice --namespace my-namespace --project my-project --cluster business-1
 
 # add kubernetes cluster role  view  to user alice
