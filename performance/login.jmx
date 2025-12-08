@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2.1">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="测试计划" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="用户定义的变量" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="false">
+        <stringProp name="filename"></stringProp>
+        <stringProp name="parameters"></stringProp>
+        <boolProp name="resetInterpreter">false</boolProp>
+        <stringProp name="script">public static String getEnv(String env_name,String default_value){
+    String env=System.getenv(env_name);
+    if (env==null){
+        return default_value;
+    }else{
+        return env;
+    }
+}
+
+public static void setVar(String var_name,String var_value){
+    String tmp_value=vars.get(var_name);
+    if(tmp_value==null){
+        vars.put(var_name,var_value);
+        log.info(var_name+&quot;: &quot;+var_value);
+    }
+}
+
+String var_seted=vars.get(&quot;VAR_SETED&quot;);
+if(var_seted==null){
+    String API_TYPE=getEnv(&quot;API_TYPE&quot;,&quot;http&quot;);
+    setVar(&quot;API_TYPE&quot;,API_TYPE);
+
+    String API_IP=getEnv(&quot;API_IP&quot;,&quot;cloud-staging-api.alauda.cn&quot;);
+    setVar(&quot;API_IP&quot;,API_IP);
+
+    String API_PORT=getEnv(&quot;API_PORT&quot;,&quot;&quot;);
+    setVar(&quot;API_PORT&quot;,API_PORT);
+
+    String account=getEnv(&quot;ACCOUNT&quot;,&quot;admin@alauda.io&quot;);
+    if(account.contains(&quot;/&quot;)){
+        String[] auth_account=account.split(&quot;/&quot;);
+        setVar(&quot;AUTH&quot;,auth_account[0]);
+        setVar(&quot;ACCOUNT&quot;,auth_account[1]);
+    }else{
+    	    setVar(&quot;AUTH&quot;,&quot;local&quot;);
+    	    setVar(&quot;ACCOUNT&quot;,account);
+    }
+
+    String PASSWORD=getEnv(&quot;PASSWORD&quot;,&quot;password&quot;);
+    setVar(&quot;PASSWORD&quot;,PASSWORD);
+
+    String PAUSE_TIME=getEnv(&quot;PAUSE_TIME&quot;,&quot;&quot;);
+    setVar(&quot;PAUSE_TIME&quot;,PAUSE_TIME);
+
+    String USERS=getEnv(&quot;USERS&quot;,&quot;100&quot;);
+    setVar(&quot;USERS&quot;,USERS);
+    
+    setVar(&quot;VAR_SETED&quot;,&quot;yes&quot;);
+}</stringProp>
+      </BeanShellPreProcessor>
+      <hashTree/>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="API_TYPE" elementType="Argument">
+            <stringProp name="Argument.name">API_TYPE</stringProp>
+            <stringProp name="Argument.value">${__env(API_TYPE,,https)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="API_IP" elementType="Argument">
+            <stringProp name="Argument.name">API_IP</stringProp>
+            <stringProp name="Argument.value">${__env(API_IP,,10.0.128.214)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="API_PORT" elementType="Argument">
+            <stringProp name="Argument.name">API_PORT</stringProp>
+            <stringProp name="Argument.value">${__env(API_PORT,,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="ACCOUNT" elementType="Argument">
+            <stringProp name="Argument.name">ACCOUNT</stringProp>
+            <stringProp name="Argument.value">${__env(ACCOUNT,,admin@cpaas.io)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="AUTH" elementType="Argument">
+            <stringProp name="Argument.name">AUTH</stringProp>
+            <stringProp name="Argument.value">${__env(AUTH,,local)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PASSWORD" elementType="Argument">
+            <stringProp name="Argument.name">PASSWORD</stringProp>
+            <stringProp name="Argument.value">${__env(PASSWORD,,password)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="REGION_NAME" elementType="Argument">
+            <stringProp name="Argument.name">REGION_NAME</stringProp>
+            <stringProp name="Argument.value">${__env(REGION_NAME,,performance)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="NS_NAME" elementType="Argument">
+            <stringProp name="Argument.name">NS_NAME</stringProp>
+            <stringProp name="Argument.value">${__env(NS_NAME,,project-1-ns-1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PRO_NAME" elementType="Argument">
+            <stringProp name="Argument.name">PRO_NAME</stringProp>
+            <stringProp name="Argument.value">${__env(PRO_NAME,,project-1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="PAUSE_TIME" elementType="Argument">
+            <stringProp name="Argument.name">PAUSE_TIME</stringProp>
+            <stringProp name="Argument.value">${__env(PAUSE_TIME,,10000)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="THREAD_NUM" elementType="Argument">
+            <stringProp name="Argument.name">THREAD_NUM</stringProp>
+            <stringProp name="Argument.value">${__env(THREAD_NUM,,500)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="RAMP_UP_PERIOD" elementType="Argument">
+            <stringProp name="Argument.name">RAMP_UP_PERIOD</stringProp>
+            <stringProp name="Argument.value">${__env(RAMP_UP_PERIOD,,1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="USERS" elementType="Argument">
+            <stringProp name="Argument.name">USERS</stringProp>
+            <stringProp name="Argument.value">${__env(USERS,,100)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="循环控制器" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </SetupThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP请求默认值" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="用户定义的变量" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${API_IP}</stringProp>
+          <stringProp name="HTTPSampler.port">${__groovy(vars.get(&quot;API_PORT&quot;).equals(&quot;80&quot;) || vars.get(&quot;API_PORT&quot;).equals(&quot;443&quot;) ||  vars.get(&quot;API_PORT&quot;).equals(&quot;&quot;) ? &quot;&quot; : vars.get(&quot;API_PORT&quot;),)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${API_TYPE}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path"></stringProp>
+          <stringProp name="HTTPSampler.concurrentPool">6</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="setup init user" enabled="true">
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">String[] accounts = vars.get(&quot;ACCOUNT&quot;).split(&quot;,&quot;);
+String[] passwords = vars.get(&quot;PASSWORD&quot;).split(&quot;,&quot;);
+props.put(&quot;accounts&quot;, accounts);
+props.put(&quot;passwords&quot;, passwords);
+
+</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="setup init threads" enabled="true">
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+String users = vars.get(&quot;USERS&quot;);
+int int_users = Integer.parseInt(users);
+DecimalFormat df=new DecimalFormat(&quot;0.0000&quot;);
+
+int login_target_tp = int_users*6;
+props.put(&quot;login_target_tp&quot;, Integer.toString(login_target_tp));
+
+int login_treads = (int) Math.ceil(Double.valueOf(df.format((float)int_users/300)));
+props.put(&quot;login_treads&quot;, Integer.toString(login_treads));
+
+</stringProp>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="login" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${__BeanShell(2 * Integer.parseInt(props.get(&quot;login_treads&quot;)),)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">0</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">${__P(RUN_TIME,)}</stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP请求默认值" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="用户定义的变量" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${API_IP}</stringProp>
+          <stringProp name="HTTPSampler.port">${__groovy(vars.get(&quot;API_PORT&quot;).equals(&quot;80&quot;) || vars.get(&quot;API_PORT&quot;).equals(&quot;443&quot;) ||  vars.get(&quot;API_PORT&quot;).equals(&quot;&quot;) ? &quot;&quot; : vars.get(&quot;API_PORT&quot;),)}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${API_TYPE}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path"></stringProp>
+          <stringProp name="HTTPSampler.concurrentPool">6</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout">5000</stringProp>
+          <stringProp name="HTTPSampler.response_timeout">60000</stringProp>
+        </ConfigTestElement>
+        <hashTree/>
+        <PreciseThroughputTimer guiclass="TestBeanGUI" testclass="PreciseThroughputTimer" testname="Precise Throughput Timer" enabled="true">
+          <doubleProp>
+            <name>allowedThroughputSurplus</name>
+            <value>10.0</value>
+            <savedValue>0.0</savedValue>
+          </doubleProp>
+          <stringProp name="batchSize">${__groovy(props.get(&quot;login_treads&quot;))}</stringProp>
+          <intProp name="batchThreadDelay">0</intProp>
+          <longProp name="duration">300</longProp>
+          <stringProp name="exactLimit">${__groovy(props.get(&quot;login_target_tp&quot;))}</stringProp>
+          <longProp name="randomSeed">0</longProp>
+          <stringProp name="throughput">${__groovy(props.get(&quot;login_target_tp&quot;))}</stringProp>
+          <intProp name="throughputPeriod">300</intProp>
+        </PreciseThroughputTimer>
+        <hashTree/>
+        <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Variable" enabled="true">
+          <stringProp name="variableName">username_index</stringProp>
+          <stringProp name="outputFormat"></stringProp>
+          <stringProp name="minimumValue">0</stringProp>
+          <stringProp name="maximumValue">${__groovy(props.get(&quot;accounts&quot;).length - 1)}</stringProp>
+          <stringProp name="randomSeed"></stringProp>
+          <boolProp name="perThread">true</boolProp>
+        </RandomVariableConfig>
+        <hashTree/>
+        <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="计数器" enabled="true">
+          <stringProp name="CounterConfig.start">1</stringProp>
+          <stringProp name="CounterConfig.end"></stringProp>
+          <stringProp name="CounterConfig.incr">1</stringProp>
+          <stringProp name="CounterConfig.name">index</stringProp>
+          <stringProp name="CounterConfig.format"></stringProp>
+          <boolProp name="CounterConfig.per_user">false</boolProp>
+        </CounterConfig>
+        <hashTree/>
+        <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="L0 login" enabled="true">
+          <boolProp name="TransactionController.parent">true</boolProp>
+          <boolProp name="TransactionController.includeTimers">false</boolProp>
+        </TransactionController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="setup_request-get auth url" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">console-platform/api/v1/token/login</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Referer</stringProp>
+                  <stringProp name="Header.value">${API_TYPE}://${API_IP}${__groovy(vars.get(&quot;API_PORT&quot;).equals(&quot;80&quot;) || vars.get(&quot;API_PORT&quot;).equals(&quot;443&quot;) ||  vars.get(&quot;API_PORT&quot;).equals(&quot;&quot;) ? &quot;&quot; : &quot;:&quot;+vars.get(&quot;API_PORT&quot;),)}/console-platform</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Assertion" enabled="true">
+              <stringProp name="BeanShellAssertion.query">import org.json.JSONObject;
+import java.net.URL;
+
+if(!ResponseCode.matches(&quot;-?\\d+(\\.\\d+)?&quot;)){
+    SampleResult.setSuccessful(false);
+}else{
+    SampleResult.setSuccessful(true);
+    if(ResponseCode.equals(&quot;200&quot;)){
+        String rspdata = new String(ResponseData);
+        JSONObject rsp = new JSONObject(rspdata);
+        String auth_url = rsp.getString(&quot;auth_url&quot;);
+        URL url = new URL(auth_url);
+        String dex_proto = url.getProtocol();
+        String dex_host = url.getHost();
+        String dex_port = url.getPort()&gt;0 ? String.valueOf(url.getPort()) : &quot;&quot;;
+        String dex_url = url.getPath();
+        String dex_para = url.getQuery();
+        vars.put(&quot;dex_proto&quot;,dex_proto);
+        vars.put(&quot;dex_host&quot;,dex_host);
+        vars.put(&quot;dex_port&quot;,dex_port);
+        vars.put(&quot;dex_url&quot;,dex_url);
+        vars.put(&quot;dex_para&quot;,dex_para);
+        vars.put(&quot;auth_url&quot;,&quot;/dex/api/v1/authorize?&quot; + dex_para);
+    }
+}</stringProp>
+              <stringProp name="BeanShellAssertion.filename"></stringProp>
+              <stringProp name="BeanShellAssertion.parameters"></stringProp>
+              <boolProp name="BeanShellAssertion.resetInterpreter">false</boolProp>
+            </BeanShellAssertion>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="false">
+              <stringProp name="JSONPostProcessor.referenceNames">auth_url</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.auth_url</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="setup_login_get_req" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${dex_host}</stringProp>
+            <stringProp name="HTTPSampler.port">${dex_port}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${dex_proto}</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">${auth_url}</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Referer</stringProp>
+                  <stringProp name="Header.value">${API_TYPE}://${API_IP}${__groovy(vars.get(&quot;API_PORT&quot;).equals(&quot;80&quot;) || vars.get(&quot;API_PORT&quot;).equals(&quot;443&quot;) ||  vars.get(&quot;API_PORT&quot;).equals(&quot;&quot;) ? &quot;&quot; : &quot;:&quot;+vars.get(&quot;API_PORT&quot;),)}/console-platform</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor-req" enabled="false">
+              <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+              <stringProp name="RegexExtractor.refname">req</stringProp>
+              <stringProp name="RegexExtractor.regex">/dex/auth/${AUTH}\?req=(.+?)&quot;</stringProp>
+              <stringProp name="RegexExtractor.template">$1$</stringProp>
+              <stringProp name="RegexExtractor.default"></stringProp>
+              <stringProp name="RegexExtractor.match_number">0</stringProp>
+              <stringProp name="Sample.scope">all</stringProp>
+            </RegexExtractor>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">req</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.req</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+              <stringProp name="Sample.scope">all</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="setup_login_create_connector_id" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${dex_host}</stringProp>
+            <stringProp name="HTTPSampler.port">${dex_port}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${dex_proto}</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/dex/api/v1/authorize/${AUTH}?req=${req}</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Referer</stringProp>
+                  <stringProp name="Header.value">${API_TYPE}://${API_IP}${__groovy(vars.get(&quot;API_PORT&quot;).equals(&quot;80&quot;) || vars.get(&quot;API_PORT&quot;).equals(&quot;443&quot;) ||  vars.get(&quot;API_PORT&quot;).equals(&quot;&quot;) ? &quot;&quot; : &quot;:&quot;+vars.get(&quot;API_PORT&quot;),)}/console-platform</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="setup get rsa pubkey" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="用户定义的变量" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/dex/pubkey</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="JSR223 PreProcessor" enabled="true">
+              <stringProp name="scriptLanguage">groovy</stringProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="cacheKey">true</stringProp>
+              <stringProp name="script">String username = props.get(&quot;accounts&quot;)[Integer.parseInt(vars.get(&quot;username_index&quot;))];
+String password = props.get(&quot;passwords&quot;)[Integer.parseInt(vars.get(&quot;username_index&quot;))];
+vars.put(&quot;USER_NAME&quot;,username);
+vars.put(&quot;USER_PWD&quot;,password);</stringProp>
+            </JSR223PreProcessor>
+            <hashTree/>
+            <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Assertion" enabled="true">
+              <stringProp name="BeanShellAssertion.query">import org.json.JSONObject;
+import org.apache.commons.codec.binary.Base64;
+import java.io.ByteArrayOutputStream;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
+import java.util.Map;
+import javax.crypto.Cipher;
+import java.math.BigInteger;
+import java.security.spec.RSAPublicKeySpec;
+
+String RSA_PUB_KEY=&quot;&quot;;
+String KEY_ALGORITHM = &quot;RSA&quot;;
+String SIGNATURE_ALGORITHM = &quot;MD5withRSA&quot;;
+int MAX_ENCRYPT_BLOCK = 117;
+int MAX_DECRYPT_BLOCK = 128;
+
+//public byte[] decryptByPublicKey(byte[] encryptedData, String publicKey)throws Exception {
+//        byte[] keyBytes = Base64.decodeBase64(publicKey);
+//        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
+//        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+//        Key publicK = keyFactory.generatePublic(x509KeySpec);
+//        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+//        cipher.init(Cipher.DECRYPT_MODE, publicK);
+//        int inputLen = encryptedData.length;
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        int offSet = 0;
+//        byte[] cache;
+//        int i = 0;
+//        // 对数据分段解密
+//        while (inputLen - offSet &gt; 0) {
+//            if (inputLen - offSet &gt; MAX_DECRYPT_BLOCK) {
+//                cache = cipher.doFinal(encryptedData, offSet, MAX_DECRYPT_BLOCK);
+//            } else {
+//                cache = cipher.doFinal(encryptedData, offSet, inputLen - offSet);
+//            }
+//            out.write(cache, 0, cache.length);
+//            i++;
+//            offSet = i * MAX_DECRYPT_BLOCK;
+//        }
+//        byte[] decryptedData = out.toByteArray();
+//        out.close();
+//        return decryptedData;
+//}
+
+public byte[] encryptByPublicKey(byte[] data, String publicKey)throws Exception {
+        byte[] keyBytes = Base64.decodeBase64(publicKey);
+        String exponentBase64 = &quot;65537&quot;;
+        X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(keyBytes);
+//        RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(new BigInteger(1,b64dec.decodeBuffer(publicKey)), new BigInteger(1, b64dec.decodeBuffer(exponentBase64)));
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+        Key publicK = keyFactory.generatePublic(x509KeySpec);
+        // 对数据加密
+        Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+        cipher.init(Cipher.ENCRYPT_MODE, publicK);
+        int inputLen = data.length;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        int offSet = 0;
+        byte[] cache;
+        int i = 0;
+        // 对数据分段加密
+        while (inputLen - offSet &gt; 0) {
+            if (inputLen - offSet &gt; MAX_ENCRYPT_BLOCK) {
+                cache = cipher.doFinal(data, offSet, MAX_ENCRYPT_BLOCK);
+            } else {
+                cache = cipher.doFinal(data, offSet, inputLen - offSet);
+            }
+            out.write(cache, 0, cache.length);
+            i++;
+            offSet = i * MAX_ENCRYPT_BLOCK;
+        }
+        byte[] encryptedData = out.toByteArray();
+        out.close();
+        return encryptedData;
+}
+
+String ResponseCode = SampleResult.getResponseCode();
+String result =&quot;&quot;;
+String str = &quot;&quot;;
+String rsa_pubkey = &quot;&quot;;
+if(ResponseCode.equals(&quot;200&quot;)){
+    byte[] ResponseData = SampleResult.getResponseData();
+    
+    String rspdata = new String(ResponseData);
+    JSONObject jsb = new JSONObject(rspdata);
+    String ts_num = jsb.getString(&quot;ts&quot;);
+    String pubkey = jsb.getString(&quot;pubkey&quot;);
+//    String ts_num = &quot;1608186116&quot;;
+//    String pubkey = &quot;-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuQiI7Q28nQ6Q5ezwl8Zv\na+Uu470A0jTVcbfhvZ3zcLYiV6qHOAiYtwizZf+nbPQR0Qgv3Filbz0eDJhNtqX7\nXbzkRHv3yK4fGvGRiqbVCg5jCte7JUGhMzVRSoRg740oFhO2q3oOOuSy+kR+dMWG\nzeLeu7lFxADdfoE/45Ve/FrJSB8yzSkB97mXVxUVqLJXm7zXewZC0INjVIkI0ANa\nWU4lCG3f8ziwMB2gCr9JuHPgMrfIpLDUvSfHUTZe32YPyp26ssIcmGnSmQSfr+fh\n/B55uXltG4E28FuzY5EuVkKSgvHtmcQ+xJW9rnYcc8tdyaM/MtUdW09AqIOb0tbf\nFQIDAQAB\n-----END PUBLIC KEY-----\n&quot;;
+    rsa_pubkey = pubkey;
+    rsa_pubkey = rsa_pubkey.replaceAll(&quot;-----BEGIN PUBLIC KEY-----&quot;,&quot;&quot;).replaceAll(&quot;-----END PUBLIC KEY-----&quot;,&quot;&quot;).replaceAll(&quot;\n&quot;,&quot;&quot;);
+    log.info(rsa_pubkey);
+    str = &quot;{\&quot;ts\&quot;:\&quot;&quot;+ts_num+&quot;\&quot;,\&quot;password\&quot;:\&quot;&quot;+vars.get(&quot;USER_PWD&quot;)+&quot;\&quot;}&quot;;
+    log.info(str);    
+}
+try {
+    result = new String(Base64.encodeBase64(encryptByPublicKey(str.getBytes(&quot;UTF-8&quot;), rsa_pubkey)));
+    log.info(result);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+vars.put(&quot;encrypt&quot;,result);</stringProp>
+              <stringProp name="BeanShellAssertion.filename"></stringProp>
+              <stringProp name="BeanShellAssertion.parameters"></stringProp>
+              <boolProp name="BeanShellAssertion.resetInterpreter">false</boolProp>
+            </BeanShellAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="setup login using req, user, password" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&#xd;
+  &quot;account&quot;: &quot;${USER_NAME}&quot;,&#xd;
+  &quot;password&quot;: &quot;${encrypt}&quot;&#xd;
+}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain">${dex_host}</stringProp>
+            <stringProp name="HTTPSampler.port">${dex_port}</stringProp>
+            <stringProp name="HTTPSampler.protocol">${dex_proto}</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/dex/api/v1/authorize/${AUTH}?req=${req}</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8</stringProp>
+                </elementProp>
+                <elementProp name="User-Agent" elementType="Header">
+                  <stringProp name="Header.name">User-Agent</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.81 Safari/537.36</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">content-type</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Referer</stringProp>
+                  <stringProp name="Header.value">${API_TYPE}://${API_IP}${__groovy(vars.get(&quot;API_PORT&quot;).equals(&quot;80&quot;) || vars.get(&quot;API_PORT&quot;).equals(&quot;443&quot;) ||  vars.get(&quot;API_PORT&quot;).equals(&quot;&quot;) ? &quot;&quot; : &quot;:&quot;+vars.get(&quot;API_PORT&quot;),)}/console-platform</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Assertion" enabled="true">
+              <stringProp name="BeanShellAssertion.query">import org.json.JSONObject;
+import java.net.URL;
+
+if(!ResponseCode.matches(&quot;-?\\d+(\\.\\d+)?&quot;)){
+    SampleResult.setSuccessful(false);
+}else{
+    if(ResponseCode.equals(&quot;200&quot;)){
+        String rspdata = new String(ResponseData);
+        JSONObject rsp = new JSONObject(rspdata);
+        String redirect_url = rsp.getString(&quot;redirect_url&quot;);
+        URL url = new URL(redirect_url);
+        vars.put(&quot;login_param&quot;,url.getQuery());
+    }
+}</stringProp>
+              <stringProp name="BeanShellAssertion.filename"></stringProp>
+              <stringProp name="BeanShellAssertion.parameters"></stringProp>
+              <boolProp name="BeanShellAssertion.resetInterpreter">false</boolProp>
+            </BeanShellAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="login-callback" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+              <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">console-platform/api/v1/token/callback?${login_param}</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header manager" enabled="true">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="Accept" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json, text/plain, */* </stringProp>
+                </elementProp>
+                <elementProp name="User-Agent" elementType="Header">
+                  <stringProp name="Header.name">User-Agent</stringProp>
+                  <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.81 Safari/537.36</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">accept-encoding</stringProp>
+                  <stringProp name="Header.value">gzip, deflate, br</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">accept-language</stringProp>
+                  <stringProp name="Header.value">zh-CN,zh;q=0.9,en;q=0.8</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">cache-control</stringProp>
+                  <stringProp name="Header.value">no-cache</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">pragma</stringProp>
+                  <stringProp name="Header.value">no-cache</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">authorization</stringProp>
+                  <stringProp name="Header.value">Bearer undefined</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Referer</stringProp>
+                  <stringProp name="Header.value">${API_TYPE}://${API_IP}${__groovy(vars.get(&quot;API_PORT&quot;).equals(&quot;80&quot;) || vars.get(&quot;API_PORT&quot;).equals(&quot;443&quot;) ||  vars.get(&quot;API_PORT&quot;).equals(&quot;&quot;) ? &quot;&quot; : &quot;:&quot;+vars.get(&quot;API_PORT&quot;),)}/console-platform</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor-id_token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">id_token</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.access_token</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers">0</stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
