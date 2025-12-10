@@ -27,7 +27,6 @@ Upgrade Steps Record:
    Upload the extnesion packages to primary global registry
    cd extensions
    violet push ./ \
-    # --skip-crs \
     --platform-address "https://poc-upgrade-test.alaudatech.net" \
     --platform-username "admin" \
     --platform-password "Alaudapoc@123"
@@ -35,18 +34,11 @@ Upgrade Steps Record:
     Upload the extnesion packages to standby global registry
     cd extensions
     violet push ./ \
-    # --skip-crs \
     --platform-address "https://poc-upgrade-test.alaudatech.net/" \
     --platform-username "admin" \
     --platform-password "Alaudapoc@123" \
     --dest-repo "https://43.138.156.16:11443" --username "demo-test" --password "Alaudapoc@123"
 
-    # new
-    violet push opensearch-operator.v3.14.2.tgz \
-    --platform-address "https://example.com" \
-    --platform-username "<platform_user>" \
-    --platform-password "<platform_password>" \
-    --dest-repo "<standby-cluster-VIP>:11443" --username "<registry-username>" --password "<registry-password>"
 
 8. Upgrade standby global
     login to the standby global master1
