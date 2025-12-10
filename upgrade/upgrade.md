@@ -1,0 +1,151 @@
+Upgrade Steps Record:
+1. Download the ac-get-app.sh .
+2. bash ac-get-app.sh
+3. download extension plugins.(By import the generated apps.yaml back into the Alauda Customer Portal to align the extensions list. )
+4. download cli tools.
+
+5. Uninstall the etcd sync plugin
+    Verify data consistency
+    Access the Web Console of the primary cluster via its IP or VIP.
+    Switch to the Administrator view.
+    Navigate to Catalog > Cluster Plugin.
+    Select global from the cluster dropdown.
+    Find the EtcdSync plugin and click Uninstall. Wait for the uninstallation to complete.
+
+6. Upload core packages to both standby and primary global registry.
+   login to primary global master1 node, and tar the core package.
+   tar -zvf installer-core-v4.1.2-x86.tar
+   cd installer
+   bash upgrade.sh --only-sync-image=true
+
+   login to standby global master1 node, and tar the core package.
+   tar -zvf installer-core-v4.1.2-x86.tar
+   cd installer
+   bash upgrade.sh --only-sync-image=true
+
+7. Upload extension packages to both standby and primary global registry.
+   Upload the extnesion packages to primary global registry
+   cd extensions
+   violet push ./ \
+    # --skip-crs \
+    --platform-address "https://poc-upgrade-test.alaudatech.net" \
+    --platform-username "admin" \
+    --platform-password "Alaudapoc@123"
+
+    Upload the extnesion packages to standby global registry
+    cd extensions
+    violet push ./ \
+    # --skip-crs \
+    --platform-address "https://poc-upgrade-test.alaudatech.net/" \
+    --platform-username "admin" \
+    --platform-password "Alaudapoc@123" \
+    --dest-repo "https://43.138.156.16:11443" --username "demo-test" --password "Alaudapoc@123"
+
+    # new
+    violet push opensearch-operator.v3.14.2.tgz \
+    --platform-address "https://example.com" \
+    --platform-username "<platform_user>" \
+    --platform-password "<platform_password>" \
+    --dest-repo "<standby-cluster-VIP>:11443" --username "<registry-username>" --password "<registry-password>"
+
+8. Upgrade standby global
+    login to the standby global master1
+    bash upgrade.sh --skip-sync-image
+
+    cd extensions
+    Create crs in the standby global registry
+    # cd extensions
+    violet push ./ \
+    --skip-push \
+    --platform-address "https://poc-upgrade-test.alaudatech.net/" \
+    --platform-username "admin" \
+    --platform-password "Alaudapoc@123" \
+    --dest-repo "https://43.138.156.16:11443" --username "demo-test" --password "Alaudapoc@123"
+
+    Login to the Web Console of the global cluster and switch to Administrator view.
+    Navigate to Clusters > Clusters.
+    Click on the global cluster to open its detail view.
+    Go to the Functional Components tab.
+    Click the Upgrade button.
+
+    wait the global cluster upgrade success.
+
+9. Upgrade primary global
+    login to the primary global master1
+    bash upgrade.sh --skip-sync-image
+
+    cd extensions
+    Create crs in the standby global registry
+    # cd extensions
+    violet push ./ \
+    --skip-push \
+    --platform-address "https://poc-upgrade-test.alaudatech.net" \
+    --platform-username "admin" \
+    --platform-password "Alaudapoc@123"
+
+    Login to the Web Console of the global cluster and switch to Administrator view.
+    Navigate to Clusters > Clusters.
+    Click on the global cluster to open its detail view.
+    Go to the Functional Components tab.
+    Click the Upgrade button.
+
+    wait the global cluster upgrade success.
+
+10. Reinstall the etcd sync plugin
+    To reinstall:
+    Access the Web Console of the standby global cluster via its IP or VIP.
+    Switch to Administrator view.
+    Go to Marketplace > Cluster Plugins.
+    Select the global cluster.
+    Locate Alauda Container Platform etcd Synchronizer, click Install, and provide the required parameters.
+
+    To verify installation:
+        kubectl get po -n cpaas-system -l app=etcd-sync  # Ensure pod is 1/1 Running
+
+        kubectl logs -n cpaas-system $(kubectl get po -n cpaas-system -l app=etcd-sync --no-headers | awk '{print $1}' | head -1) | grep -i "Start Sync update"
+        # Wait until the logs contain "Start Sync update"
+
+        # Recreate the pod to trigger synchronization of resources with ownerReferences
+        kubectl delete po -n cpaas-system $(kubectl get po -n cpaas-system -l app=etcd-sync --no-headers | awk '{print $1}' | head -1)
+    
+    Check Synchronization Status
+    curl "$(kubectl get svc -n cpaas-system etcd-sync-monitor -ojsonpath='{.spec.clusterIP}')/check"
+
+11. Upgrade the workload cluster
+
+    a. Control Plane Upgrades
+        Create Updated Machine Template
+        Copy the existing DCSMachineTemplate referenced by KubeadmControlPlane and modify the required specifications:
+        kubectl get dcsmachinetemplate <current-template-name> -n cpaas-system -o yaml > new-cp-template.yaml
+        for example:
+        kubectl get dcsmachinetemplate acpsit1-control-plane -n cpaas-system -o yaml > acpsit1-control-plane-template-4.2.0.yaml
+        kubectl get KubeadmControlPlane <KubeadmControlPlane-name> -n cpaas-system -oyaml > acpsit1-kubeadmcontrolplane-4.2.0.yaml
+
+        Modify Template Specifications
+            Modify the new template:
+            1. Set metadata.name to <new-template-name>
+            2. Update as needed:
+                spec.template.spec.vmTemplateName
+                spec.template.spec.dcsMachineCpuSpec.quantity
+                spec.template.spec.dcsMachineMemorySpec.quantity
+                spec.template.spec.dcsMachineDiskSpec
+
+        Modify acpsit1-kubeadmcontrolplane-4.2.0.yaml Specifications
+            Modify the yaml:
+            1. Update as needed:
+                spec.kubeadmConfigSpec.clusterConfiguration.etcd  # etcd image tag
+                spec.version  #kubernetes version
+                spec.machineTemplate.infrastructureRef.name  # <new-DCSMachineTemplate-template-name>
+
+        # Deploy Updated dcsmachinetemplate
+        kubectl apply -n cpaas-system -f acpsit1-control-plane-template-4.2.0.yaml
+        # Update Control Plane
+        kubectl apply -n cpaas-system -f acpsit1-kubeadmcontrolplane-4.2.0.yaml
+        # waite for the controlplane upgrade ok
+        kubectl get kubeadmcontrolplane <kcp-name> -n cpaas-system -w
+        kubectl get machines -n cpaas-system -l cluster.x-k8s.io/control-plane
+
+
+     b. work node Upgrades
+        
+
