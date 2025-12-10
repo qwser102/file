@@ -6,7 +6,7 @@ Upgrade Steps Record:
 
 5. Uninstall the etcd sync plugin
     Verify data consistency
-    Access the Web Console of the primary cluster via its IP or VIP.
+    Access the Web Console of the standby cluster via its IP or VIP.
     Switch to the Administrator view.
     Navigate to Catalog > Cluster Plugin.
     Select global from the cluster dropdown.
