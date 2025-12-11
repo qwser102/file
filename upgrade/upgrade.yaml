@@ -105,7 +105,29 @@ Upgrade Steps Record:
 
 11. Upgrade the workload cluster
 
-    a. Control Plane Upgrades
+    a. upgrade workload plugins
+        Login to the Web Console of the global cluster and switch to Administrator view.
+        Navigate to Clusters > Clusters.
+        Click on the workload cluster to open its detail view.
+        Go to the Functional Components tab.
+        Click the Upgrade button.
+
+    b. upgrade workload kube-ovn
+        login to the workload master
+        kubectl edit ars -n cpaas-system cni-kube-ovn
+          spec:
+            destination:
+                cluster: ""
+                namespace: ""
+            source:
+                chartPullSecret: global-registry-auth
+                charts:
+                - name: acp/chart-cpaas-kube-ovn
+                releaseName: cpaas-kube-ovn
+                targetRevision: v4.1.9          # change
+        wait the kube-ovn upgrade success.
+
+    c. Control Plane Upgrades
         Create Updated Machine Template
         Copy the existing DCSMachineTemplate referenced by KubeadmControlPlane and modify the required specifications:
         kubectl get dcsmachinetemplate <current-template-name> -n cpaas-system -o yaml > new-cp-template.yaml
@@ -138,6 +160,6 @@ Upgrade Steps Record:
         kubectl get machines -n cpaas-system -l cluster.x-k8s.io/control-plane
 
 
-     b. work node Upgrades
+     d. work node Upgrades
         
 
