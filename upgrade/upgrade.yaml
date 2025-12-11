@@ -121,9 +121,6 @@ Upgrade Steps Record:
             1. Set metadata.name to <new-template-name>
             2. Update as needed:
                 spec.template.spec.vmTemplateName
-                spec.template.spec.dcsMachineCpuSpec.quantity
-                spec.template.spec.dcsMachineMemorySpec.quantity
-                spec.template.spec.dcsMachineDiskSpec
 
         Modify acpsit1-kubeadmcontrolplane-4.2.0.yaml Specifications
             Modify the yaml:
@@ -142,18 +139,7 @@ Upgrade Steps Record:
 
 
      d. work node Upgrades
-        Create KubeadmConfigTemplate Template (optionally)
-        $ kubectl get KubeadmConfigTemplate <KubeadmConfigTemplate-name> -n cpaas-system -oyaml > acpsit1-KubeadmConfigTemplate-4.2.0.yaml
-        
-        Modify KubeadmConfigTemplate Specifications
-            Modify the new template:
-            1. Set metadata.name to <new-template-name>
-            2. Remove extraneous metadata fields (resourceVersion, uid, creationTimestamp, etc.)
-        
-        # Apply the KubeadmConfigTemplate
-        $ kubectl apply -f acpsit1-KubeadmConfigTemplate-4.2.0.yaml
-
-
+     
         # The following should be implemented for each node role, for example: infra-log,infra-monitor,infro-ingress,infra-egress,infra-registry,worker.
         Create DCSMachineTemplate Template
         Copy the existing DCSMachineTemplate referenced by MachineDeployment and modify the required specifications:
@@ -166,18 +152,23 @@ Upgrade Steps Record:
             1. Set metadata.name to <new-template-name>
             2. Update as needed:
                 spec.template.spec.vmTemplateName
-                spec.template.spec.dcsMachineCpuSpec.quantity
-                spec.template.spec.dcsMachineMemorySpec.quantity
-                spec.template.spec.dcsMachineDiskSpec
+
           
         # Apply the DCSMachineTemplate
         $ kubectl apply -f acpsit1-infra-log-template-4.2.0.yaml
 
         Update the MachineDeployment
         $ kubectl edit <MachineDeployment-name> -n cpaas-system
-        1. Update spec.template.spec.version to the target Kubernetes version
+        1. Update spec.template.spec.version to the target Kubernetes version: v1.33.6
         2. Update spec.template.spec.infrastructureRef.name to reference the new dcsmachinetemplate template
-        3. Optionally update spec.template.spec.bootstrap.configRef.name if KubeadmConfigTemplate changes are needed
+        3. Add the label info for infra nodes: spec.template.metadata.labels
+        # for example:
+        registry: ""
+        4. Add node tainets info for infra nodes: spec.template.spec.taints 
+        taints:
+          - effect: NoSchedule
+            key: node-role.kubernetes.io/infra
+            value: reserved
 
         # waite for the worker node upgrade success
         $ kubectl get machines -n cpaas-system -l cluster.x-k8s.io/control-plane
