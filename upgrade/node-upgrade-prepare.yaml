@@ -1,0 +1,6 @@
+1. Login to the standby global cluster master
+$ kubectl scale deploy -n cpaas-system capi-controller-manager --replicas=0
+
+2. Edit the capi-controller-manager deployment, add the labels sync parameters.( login in to the active and standby global cluster master)
+$ kubectl edit deploy -n cpaas-system capi-controller-manager
+- --additional-sync-machine-labels=node-role.kubernetes.io/infra,ingress,registry,log,monitor,egress
