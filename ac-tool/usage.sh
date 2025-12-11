@@ -5,6 +5,13 @@ $ sudo cp ac-linux-amd64 /usr/local/bin/ac
 # Verify the installation
 $ ac version
 
+# Installing ACP CLI on macOS
+# Move the ac-windows-amd64.exe binary to a directory in your PATH and rename it to ac.exe if desired.
+# Keep the original name if you prefer; just ensure the file's directory is in your PATH.
+# Verify the installation:
+$ ac version
+
+
 # local user login to the platform
 $ ac login <https://prod.acp.com>
 Session name: prod
