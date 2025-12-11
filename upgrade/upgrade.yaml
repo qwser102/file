@@ -14,26 +14,26 @@ Upgrade Steps Record:
 
 6. Upload core packages to both standby and primary global registry.
    login to primary global master1 node, and tar the core package.
-   tar -zvf installer-core-v4.1.2-x86.tar
-   cd installer
-   bash upgrade.sh --only-sync-image=true
+   $ tar -zvf installer-core-v4.1.2-x86.tar
+   $ cd installer
+   $ bash upgrade.sh --only-sync-image=true
 
    login to standby global master1 node, and tar the core package.
-   tar -zvf installer-core-v4.1.2-x86.tar
-   cd installer
-   bash upgrade.sh --only-sync-image=true
+   $ tar -zvf installer-core-v4.1.2-x86.tar
+   $ cd installer
+   $ bash upgrade.sh --only-sync-image=true
 
 7. Upload extension packages to both standby and primary global registry.
    Upload the extnesion packages to primary global registry
-   cd extensions
-   violet push ./ \
+   $ cd extensions
+   $ violet push ./ \
     --platform-address "https://poc-upgrade-test.alaudatech.net" \
     --platform-username "admin" \
     --platform-password "Alaudapoc@123"
 
     Upload the extnesion packages to standby global registry
-    cd extensions
-    violet push ./ \
+    $ cd extensions
+    $ violet push ./ \
     --platform-address "https://poc-upgrade-test.alaudatech.net/" \
     --platform-username "admin" \
     --platform-password "Alaudapoc@123" \
@@ -42,17 +42,7 @@ Upgrade Steps Record:
 
 8. Upgrade standby global
     login to the standby global master1
-    bash upgrade.sh --skip-sync-image
-
-    cd extensions
-    Create crs in the standby global registry
-    # cd extensions
-    violet push ./ \
-    --skip-push \
-    --platform-address "https://poc-upgrade-test.alaudatech.net/" \
-    --platform-username "admin" \
-    --platform-password "Alaudapoc@123" \
-    --dest-repo "https://43.138.156.16:11443" --username "demo-test" --password "Alaudapoc@123"
+    $ bash upgrade.sh --skip-sync-image
 
     Login to the Web Console of the global cluster and switch to Administrator view.
     Navigate to Clusters > Clusters.
@@ -64,16 +54,7 @@ Upgrade Steps Record:
 
 9. Upgrade primary global
     login to the primary global master1
-    bash upgrade.sh --skip-sync-image
-
-    cd extensions
-    Create crs in the standby global registry
-    # cd extensions
-    violet push ./ \
-    --skip-push \
-    --platform-address "https://poc-upgrade-test.alaudatech.net" \
-    --platform-username "admin" \
-    --platform-password "Alaudapoc@123"
+    $ bash upgrade.sh --skip-sync-image
 
     Login to the Web Console of the global cluster and switch to Administrator view.
     Navigate to Clusters > Clusters.
@@ -92,16 +73,16 @@ Upgrade Steps Record:
     Locate Alauda Container Platform etcd Synchronizer, click Install, and provide the required parameters.
 
     To verify installation:
-        kubectl get po -n cpaas-system -l app=etcd-sync  # Ensure pod is 1/1 Running
+        $ kubectl get po -n cpaas-system -l app=etcd-sync  # Ensure pod is 1/1 Running
 
-        kubectl logs -n cpaas-system $(kubectl get po -n cpaas-system -l app=etcd-sync --no-headers | awk '{print $1}' | head -1) | grep -i "Start Sync update"
+        $ kubectl logs -n cpaas-system $(kubectl get po -n cpaas-system -l app=etcd-sync --no-headers | awk '{print $1}' | head -1) | grep -i "Start Sync update"
         # Wait until the logs contain "Start Sync update"
 
         # Recreate the pod to trigger synchronization of resources with ownerReferences
-        kubectl delete po -n cpaas-system $(kubectl get po -n cpaas-system -l app=etcd-sync --no-headers | awk '{print $1}' | head -1)
+        $ kubectl delete po -n cpaas-system $(kubectl get po -n cpaas-system -l app=etcd-sync --no-headers | awk '{print $1}' | head -1)
     
     Check Synchronization Status
-    curl "$(kubectl get svc -n cpaas-system etcd-sync-monitor -ojsonpath='{.spec.clusterIP}')/check"
+    $ curl "$(kubectl get svc -n cpaas-system etcd-sync-monitor -ojsonpath='{.spec.clusterIP}')/check"
 
 11. Upgrade the workload cluster
 
@@ -114,7 +95,7 @@ Upgrade Steps Record:
 
     b. upgrade workload kube-ovn
         login to the workload master
-        kubectl edit ars -n cpaas-system cni-kube-ovn
+        $ kubectl edit ars -n cpaas-system cni-kube-ovn
           spec:
             destination:
                 cluster: ""
@@ -130,10 +111,10 @@ Upgrade Steps Record:
     c. Control Plane Upgrades
         Create Updated Machine Template
         Copy the existing DCSMachineTemplate referenced by KubeadmControlPlane and modify the required specifications:
-        kubectl get dcsmachinetemplate <current-template-name> -n cpaas-system -o yaml > new-cp-template.yaml
+        $ kubectl get dcsmachinetemplate <current-template-name> -n cpaas-system -o yaml > new-cp-template.yaml
         for example:
-        kubectl get dcsmachinetemplate acpsit1-control-plane -n cpaas-system -o yaml > acpsit1-control-plane-template-4.2.0.yaml
-        kubectl get KubeadmControlPlane <KubeadmControlPlane-name> -n cpaas-system -oyaml > acpsit1-kubeadmcontrolplane-4.2.0.yaml
+        $ kubectl get dcsmachinetemplate acpsit1-control-plane -n cpaas-system -o yaml > acpsit1-control-plane-template-4.2.0.yaml
+        $ kubectl get KubeadmControlPlane <KubeadmControlPlane-name> -n cpaas-system -oyaml > acpsit1-kubeadmcontrolplane-4.2.0.yaml
 
         Modify Template Specifications
             Modify the new template:
@@ -152,14 +133,56 @@ Upgrade Steps Record:
                 spec.machineTemplate.infrastructureRef.name  # <new-DCSMachineTemplate-template-name>
 
         # Deploy Updated dcsmachinetemplate
-        kubectl apply -n cpaas-system -f acpsit1-control-plane-template-4.2.0.yaml
+        $ kubectl apply -n cpaas-system -f acpsit1-control-plane-template-4.2.0.yaml
         # Update Control Plane
         kubectl apply -n cpaas-system -f acpsit1-kubeadmcontrolplane-4.2.0.yaml
-        # waite for the controlplane upgrade ok
-        kubectl get kubeadmcontrolplane <kcp-name> -n cpaas-system -w
-        kubectl get machines -n cpaas-system -l cluster.x-k8s.io/control-plane
+        # waite for the controlplane upgrade
+        $ kubectl get kubeadmcontrolplane <kcp-name> -n cpaas-system -w
+        $ kubectl get machines -n cpaas-system -l cluster.x-k8s.io/control-plane
 
 
      d. work node Upgrades
+        Create KubeadmConfigTemplate Template (optionally)
+        $ kubectl get KubeadmConfigTemplate <KubeadmConfigTemplate-name> -n cpaas-system -oyaml > acpsit1-KubeadmConfigTemplate-4.2.0.yaml
         
+        Modify KubeadmConfigTemplate Specifications
+            Modify the new template:
+            1. Set metadata.name to <new-template-name>
+            2. Remove extraneous metadata fields (resourceVersion, uid, creationTimestamp, etc.)
+        
+        # Apply the KubeadmConfigTemplate
+        $ kubectl apply -f acpsit1-KubeadmConfigTemplate-4.2.0.yaml
+
+
+        # The following should be implemented for each node role, for example: infra-log,infra-monitor,infro-ingress,infra-egress,infra-registry,worker.
+        Create DCSMachineTemplate Template
+        Copy the existing DCSMachineTemplate referenced by MachineDeployment and modify the required specifications:
+        $ kubectl get dcsmachinetemplate <current-template-name> -n cpaas-system -o yaml > new-cp-template.yaml
+        for example:
+        $ kubectl get dcsmachinetemplate acpsit1-infra-log -n cpaas-system -o yaml > acpsit1-infra-log-template-4.2.0.yaml
+
+        Modify DCSMachineTemplate Specifications
+            Modify the new template:
+            1. Set metadata.name to <new-template-name>
+            2. Update as needed:
+                spec.template.spec.vmTemplateName
+                spec.template.spec.dcsMachineCpuSpec.quantity
+                spec.template.spec.dcsMachineMemorySpec.quantity
+                spec.template.spec.dcsMachineDiskSpec
+          
+        # Apply the DCSMachineTemplate
+        $ kubectl apply -f acpsit1-infra-log-template-4.2.0.yaml
+
+        Update the MachineDeployment
+        $ kubectl edit <MachineDeployment-name> -n cpaas-system
+        1. Update spec.template.spec.version to the target Kubernetes version
+        2. Update spec.template.spec.infrastructureRef.name to reference the new dcsmachinetemplate template
+        3. Optionally update spec.template.spec.bootstrap.configRef.name if KubeadmConfigTemplate changes are needed
+
+        # waite for the worker node upgrade success
+        $ kubectl get machines -n cpaas-system -l cluster.x-k8s.io/control-plane
+
+
+            
+
 
