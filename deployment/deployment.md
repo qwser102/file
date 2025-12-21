@@ -25,3 +25,9 @@ cat /proc/cmdline
 login to the global master1
 cd install/
 bash setup.sh
+
+
+```
+violet push extensions/ --platform-address https://192.168.176.48 --platform-username admin --platform-password 1qaz@WSX
+```
+
