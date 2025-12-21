@@ -171,7 +171,7 @@ Upgrade Steps Record:
             value: reserved
 
         # waite for the worker node upgrade success
-        $ kubectl get machines -n cpaas-system -l cluster.x-k8s.io/control-plane
+        $ kubectl get machines -n cpaas-system |grep <cluster_name>
 
 
 
