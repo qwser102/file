@@ -109,7 +109,7 @@ Prepare the `envfile`
 
 ```shell
 # cat /root/performance/ingress/envfile
-JMETER_JMX_NAME=/performance/testcases/TestACP2.10/post_put_delete_deployment.jmx
+JMETER_JMX_NAME=/performance/testcases/TestACP2.10/visit_app.jmx
 REPORT_DIR=/home/data/result
 APP_URL=http://nginx-demo.demo.com
 APP_DOMAIN=nginx-demo.demo.com
