@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-http-probe
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+    ports:
+    - containerPort: 80
+      name: http
+    # Liveness Probe: Restart container if /healthz fails
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: http  # Use port name instead of number
+        scheme: HTTP
+        httpHeaders:
+        - name: X-Custom-Header
+          value: HealthCheck
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 2
+      failureThreshold: 3
+    # Readiness Probe: Stop receiving traffic if /healthz fails
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: 80
+      initialDelaySeconds: 3
+      periodSeconds: 5
