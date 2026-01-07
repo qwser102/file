@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-tcp-probe
+spec:
+  containers:
+  - name: mysql
+    image: mysql:8.0
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: "rootpasswd"
+    ports:
+    - containerPort: 3306
+      name: mysql-port
+    # Startup Probe: Wait for MySQL to finish initialization (critical for slow-start apps)
+    startupProbe:
+      tcpSocket:
+        port: mysql-port
+      failureThreshold: 10
+      periodSeconds: 5  # Total tolerance time: 10*5=50 seconds
+    # Liveness Probe: Restart if TCP connection to 3306 fails
+    livenessProbe:
+      tcpSocket:
+        port: 3306
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 3
