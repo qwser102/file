@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis-exec-probe
+spec:
+  containers:
+  - name: redis
+    image: redis:alpine
+    # Liveness Probe: Check if Redis responds to PING command
+    livenessProbe:
+      exec:
+        command: ["redis-cli", "ping"]  # Exit code 0 = PONG received
+      initialDelaySeconds: 10
+      periodSeconds: 5
+      failureThreshold: 2
+    # Readiness Probe: Check if Redis can read data
+    readinessProbe:
+      exec:
+        command: ["sh", "-c", "redis-cli GET test-key || exit 0"]
+      initialDelaySeconds: 5
+      periodSeconds: 5
