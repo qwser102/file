@@ -9,6 +9,15 @@ metadata:
     auth.cpaas.io/roletemplate.level: cluster
 spec:
   customRules:
-    - apiGroups: [""]
-      resources: ["configmaps"]
-      verbs: ["get", "list", "watch"]
+    - apiGroup: monitoring.alauda.io
+      bindCluster: global
+      bindNamespacePart: common
+      bindScope: namespace
+      resources:
+        - metrics
+    - apiGroup: monitoring.alauda.io
+      bindCluster: global
+      bindNamespacePart: project_ns
+      bindScope: namespace
+      resources:
+        - metrics
