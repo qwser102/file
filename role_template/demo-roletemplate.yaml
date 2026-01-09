@@ -1,0 +1,14 @@
+apiVersion: auth.alauda.io/v1beta1
+kind: RoleTemplate
+metadata:
+  name: demo-customrules
+  annotations:
+    cpaas.io/display-name: Example Custom Rules Role
+    cpaas.io/description: customRules example
+  labels:
+    auth.cpaas.io/roletemplate.level: namespace
+spec:
+  customRules:
+    - apiGroups: [""]
+      resources: ["configmaps"]
+      verbs: ["get", "list", "watch"]
