@@ -9,6 +9,6 @@ metadata:
     auth.cpaas.io/roletemplate.level: platform
 spec:
   customRules:
-    - apiGroups: auth.alauda.io
-      resources: ["projectbindings","projectquotas","projects","views","projectmembers"]
+    - apiGroup: auth.alauda.io
+      resources: ["projects"]
       verbs: ["get", "list", "watch","create","update","patch","delete","deletecollection"]
