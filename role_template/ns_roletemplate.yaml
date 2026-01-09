@@ -1,0 +1,14 @@
+apiVersion: auth.alauda.io/v1beta1
+kind: RoleTemplate
+metadata:
+  name: namespace-customrules
+  annotations:
+    cpaas.io/display-name: Custom Rules Role for namespace create
+    cpaas.io/description: Custom Rules Role for namespace create
+  labels:
+    auth.cpaas.io/roletemplate.level: cluster
+spec:
+  customRules:
+    - apiGroups: [""]
+      resources: ["configmaps"]
+      verbs: ["get", "list", "watch"]
