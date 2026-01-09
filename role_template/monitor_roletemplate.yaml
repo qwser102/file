@@ -1,0 +1,14 @@
+apiVersion: auth.alauda.io/v1beta1
+kind: RoleTemplate
+metadata:
+  name: monitor-customrules
+  annotations:
+    cpaas.io/display-name: Custom Rules Role for monitor
+    cpaas.io/description: Custom Rules Role for monitor
+  labels:
+    auth.cpaas.io/roletemplate.level: cluster
+spec:
+  customRules:
+    - apiGroups: [""]
+      resources: ["configmaps"]
+      verbs: ["get", "list", "watch"]
