@@ -1,0 +1,118 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: helloworld
+  name: helloworld
+  namespace: test-ns2
+  annotations:
+    cpaas.io/display-name: ""
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld
+      service.cpaas.io/name: deployment-helloworld
+      project.cpaas.io/name: test
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: helloworld
+        service.cpaas.io/name: deployment-helloworld
+        project.cpaas.io/name: test
+      annotations: {}
+    spec:
+      containers:
+        - image: harbor.acpglobal.uat.dbs.com/automation-test/qaimages:helloworld
+          name: qaimages
+          securityContext:
+            runAsUser: 0
+          resources:
+            limits:
+              cpu: 300m
+              memory: 600Mi
+            requests:
+              cpu: 300m
+              memory: 600Mi
+          ports:
+            - protocol: TCP
+              containerPort: 80
+            - protocol: TCP
+              containerPort: 443
+          volumes: null
+          volumeMounts: null
+          env: null
+          envFrom: null
+          args: null
+          command: null
+          logPaths: null
+          excludeLogPaths: null
+          livenessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+            httpGet:
+              path: /
+              scheme: HTTP
+              port: 80
+          readinessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+            httpGet:
+              path: /
+              scheme: HTTP
+              port: 80
+      hostNetwork: false
+      nodeSelector: {}
+      affinity: {}
+      volumes: []
+      terminationGracePeriodSeconds: 30
+    network:
+      fixIp: []
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: helloworld
+  name: helloworld
+  namespace: test-ns2
+spec:
+  ports:
+  - name: 80-80
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: helloworld
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: helloworld
+  namespace: test-ns2
+spec:
+  ingressClassName: ingress-nginx-operator-ingress-instance1
+  rules:
+  - host: helloworld.acpsit1.uat.dbs.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: helloworld
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
