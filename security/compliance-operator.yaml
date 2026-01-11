@@ -1,0 +1,147 @@
+Step1: serach the Installed Profiles
+$ kubectl get profiles.compliance.security.alauda.io -n compliance-system
+NAME                          ENGINE       VERSION   AGE
+cis-1.11-controlplane         kube-bench             14m
+cis-1.11-etcd                 kube-bench             14m
+cis-1.11-master               kube-bench             14m
+cis-1.11-node                 kube-bench             14m
+cis-1.11-policies             kube-bench             14m
+stig-k8s-v2r2-api-server                   v2r2      14m
+stig-k8s-v2r2-control-plane                v2r2      14m
+stig-k8s-v2r2-general                      v2r2      14m
+stig-k8s-v2r2-kubelet                      v2r2      14m
+stig-os-microos               openscap               14m
+
+# Profile is a resource used to manage baseline rules. You can use kubectl to view the supported STIG and CIS baselines.
+
+# create K8S STIG Scan
+# k8s-stig-scansuit.yaml
+apiVersion: compliance.security.alauda.io/v1alpha1
+kind: ScanSuite
+metadata:
+  name: stig-scan
+  namespace: compliance-system
+spec:
+  profiles:
+  - stig-k8s-v2r2-api-server
+  - stig-k8s-v2r2-control-plane
+  - stig-k8s-v2r2-general
+  - stig-k8s-v2r2-kubelet
+
+# create microos STIG scan
+# microos-stig.scan.yaml
+apiVersion: compliance.security.alauda.io/v1alpha1
+kind: Scan
+metadata:
+  name: os-scan
+  namespace: compliance-system
+spec:
+  profile: stig-os-microos
+
+
+# Create Scan
+apiVersion: compliance.security.alauda.io/v1alpha1
+kind: Scan
+metadata:
+  name: cis-111-controlplane-scan
+  namespace: compliance-system
+spec:
+  profile: cis-1.11-controlplane            # Profile name
+  scanType: node                            # STIG supports platform, node, all. CIS only supports node and does not support rule-level node selection.
+  nodeScopeStrategy: auto                   # Auto-select nodes by baseline type; supports auto, manual
+  targetNodeRoles: ["control-plane"]        # Optional; further restrict node roles; supports control-plane / master / worker
+  nodeSelector:
+    kubernetes.io/os: linux                 # Optional; filter nodes by label
+  maxHistoricalResults: 3                   # Keep 3 historical results; prune automatically
+
+Notes:
+CIS only supports scanType: node; platform/all will not dispatch jobs, because kube-bench does not support rule-level node selection.
+STIG supports three modes: platform (only checkType=platform rules), node (only checkType=node, uses node scheduler), all (platform + node together).
+
+
+# Create ScanSuite (Batch/Scheduled)
+apiVersion: compliance.security.alauda.io/v1alpha1
+kind: ScanSuite
+metadata:
+  name: test-scan
+  namespace: compliance-system
+spec:
+  profiles:
+  - stig-k8s-v2r2-api-server
+  - stig-k8s-v2r2-control-plane
+  - stig-k8s-v2r2-general
+  - stig-k8s-v2r2-kubelet
+  schedule: "0 2 * * *"         # Run daily at 02:00; leave empty for manual trigger only
+  maxHistoricalResults: 3       # Keep 3 results per child Scan
+  scanTemplate:
+    scanType: node
+    nodeScopeStrategy: auto
+    targetNodeRoles:
+      - control-plane
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: ""
+#####
+Node Scheduling (Scan/ScanSuite)
+nodeSelector: basic node filtering (LabelSelector).
+targetNodeRoles: role filtering; intersection with nodeSelector.
+nodeScopeStrategy
+manual: run on all matched nodes (ignores rule nodeScope).
+auto: kube-bench maps nodes by benchmark.file.type; unified dispatches by rule spec.nodeScope/nodeSelector; no job is created if there is no match.
+OS/Node scanning requires scanType: node.
+CIS/STIG baselines have different scheduling rules, so they cannot be scanned together in a single scan.
+####
+
+# Check Scan Status
+kubectl  get scan -n compliance-system -o wide
+
+
+# Export Reports (Scan/ScanSuite)
+NS=compliance-system
+SCAN=test-scan-stig-k8s-v2r2-api-server
+ 
+# Single Scan ZIP (includes HTML/CSV/Excel/metadata)
+kubectl create --raw "/apis/reports.compliance.security.alauda.io/v1alpha1/scans/${NS}/${SCAN}/export/zip" -f - <<< '{}' > ${SCAN}.zip
+ 
+# ScanSuite latest ZIP (includes aggregated CSV/XLS, metadata, and each child Scan's HTML/metadata)
+SUITE=test-scan
+kubectl create --raw "/apis/reports.compliance.security.alauda.io/v1alpha1/scansuites/${NS}/${SUITE}/export/zip" -f - <<< '{}' > ${SUITE}.zip
+
+# Get history reports
+# Get history runID
+$ kubectl  get scansuite -n compliance-system test-scan -o yaml | grep runID
+    runID: 20260106-034701-d30c73
+    runID: 20260106-035650-004246
+    runID: 20260106-043648-7d189d
+ 
+# Export history reports
+NS=compliance-system
+SUITE=test-scan
+RunID=20260106-035650-004246
+kubectl create --raw "/apis/reports.compliance.security.alauda.io/v1alpha1/scansuites/${NS}/${SUITE}/export/zip?runID=${RunID}" -f - <<< '{}' > ${SUITE}-${RunID}.zip
+
+# Export reports with CURL
+# Example of exporting reports with CURL
+  
+APISERVER=https://<platform address>/kubernetes/<cluster name>
+TOKEN="<Bearer_token>"
+NS=compliance-system
+SUITE=test-scan
+  
+curl -k -X POST \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{}' \
+  --output "${SUITE}.zip" \
+  "${APISERVER}/apis/reports.compliance.security.alauda.io/v1alpha1/scansuites/${NS}/${SUITE}/export/zip"
+
+# Run/Schedule
+Pause/Resume ScanSuite:
+$ kubectl patch scansuite test-scan -n compliance-system --type merge -p '{"spec":{"paused":true}}'
+Trigger a Scan manually:
+# Add an annotation to the ScanSuite to trigger a run.
+$ kubectl annotate scansuite test-scan -n compliance-system compliance.security.alauda.io/force-suite=true --overwrite
+ 
+# For a single Scan, use compliance.security.alauda.io/force-scan=true
+$ kubectl annotate scan test-scan-stig-k8s-v2r2-api-server -n compliance-system compliance.security.alauda.io/force-scan=true --overwrite
+
+
