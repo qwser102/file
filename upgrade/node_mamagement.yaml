@@ -1,0 +1,20 @@
+# Delete node
+#Case 1: delete node from k8s only 
+kubectl patch machine <machine-name> -n cpaas-system \
+  --type='json' \
+  -p='[{"op": "add", "path": "/metadata/annotations", "value": {"cluster.x-k8s.io/delete-machine": "true", "cpaas.io/delete-ip-hostname": "true","cpaas.io/retain-vm": "true"}}]'
+
+#Case 2: delete node from kubernetes cluster and delete the node information in DCSIpHostname resource.
+kubectl patch machine <machine-name> -n cpaas-system \
+  --type='json' \
+  -p='[{"op": "add", "path": "/metadata/annotations", "value": {"cluster.x-k8s.io/delete-machine": "true", "cpaas.io/delete-ip-hostname": "true"}}]'
+
+#Case 3: delete node from kubernetes cluster but not delete the node information in DCSIpHostname resource.
+kubectl patch machine <machine-name> -n cpaas-system \
+  --type='json' \
+  -p='[{"op": "add", "path": "/metadata/annotations", "value": {"cluster.x-k8s.io/delete-machine": "true"}}]'
+
+kubectl patch machinedeployments <machinedeployments name> -n cpaas-system \
+  --type='json' \
+  -p='[{"op": "replace", "path": "/spec/replicas", "value": 9}]'
+
