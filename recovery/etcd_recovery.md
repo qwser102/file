@@ -97,3 +97,21 @@ systemctl restart kubelet
 # 11. Restart one pod to make sure that the cluster is running ok.
 ```
 
+### 3. Global integrate with workload cluster
+
+If you found the global visit workload cluster encounter 401, then you should do the following step.  
+
+```shell
+# step1. log in to the workload cluster master
+kubectl get secret -n cpaas-system |grep k8sadmin
+
+kubectl get secret -n cpaas-system k8sadmin -oyaml
+# get the .data.token
+
+# step2. login in to the global master
+kubectl get secret -n cpaas-system |grep tke-cluster-<cluster>
+kubectl edit secret -n cpaas-system tke-cluster-<cluster> 
+# replace the .data.token with the token that you get in step1.
+```
+
+
