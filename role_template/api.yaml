@@ -1,0 +1,82 @@
+# example
+curl -k --location '<ACPEndpoint>/auth/v2/userbindings' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <token>' \
+--data '{
+    "subject": {
+        "name": "test",
+        "kind": "User"
+    },
+    "role": "project-admin-system",
+    "scope": "project",
+    "constraint": {
+        "project": "proj02"
+    }
+}'
+
+# Binding platform management-level role
+{
+  "subject": {
+      "kind": "User",
+      "name": "test"
+  },
+  "role": "platform-admin-system",
+  "scope": "platform"
+}
+
+# Bind project-level role
+{
+  "subject": {
+      "kind": "User",
+      "name": "test"
+  },
+  "role": "project-admin-system",
+  "scope": "project",
+  "constraint": {
+    "project": "proj01"
+  }
+}
+
+# Bind namespace-level role
+{
+  "subject": {
+      "kind": "User",
+      "name": "test"
+  },
+  "role": "namespace-admin-system",
+  "scope": "namespace",
+  "constraint": {
+    "project": "proj01",
+    "namespace": "ns01",
+    "cluster": "cluster01"
+  }
+}
+
+# Bind cluster-level role
+{
+  "subject": {
+      "kind": "User",
+      "name": "test"
+  },
+  "role": "cluster-admin-system",
+  "scope": "cluster",
+  "constraint": {
+    "cluster": "cluster01"
+  }
+}
+
+# Custom userbinding name
+{
+  "metadata": {
+      "name": "custom-binding-name"
+  }
+  "subject": {
+      "kind": "User",
+      "name": "test"
+  },
+  "role": "cluster-admin-system",
+  "scope": "cluster",
+  "constraint": {
+    "cluster": "cluster01"
+  }
+}
