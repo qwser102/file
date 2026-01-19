@@ -60,6 +60,8 @@ spec:
         - get
         - list
         - watch
+        - create
+        - delete
     - functionResourceRef: infrastructure-moduleinfo
       verbs:
         - get
