@@ -1,1 +1,72 @@
-
+apiVersion: auth.alauda.io/v1beta1
+kind: RoleTemplate
+metadata:
+  labels:
+    auth.cpaas.io/roletemplate.frozen: "false"
+    auth.cpaas.io/roletemplate.hidden: "false"
+    auth.cpaas.io/roletemplate.level: namespace
+    auth.cpaas.io/roletemplate.official: "false"
+    rbac.cpaas.io/version: v2
+  name: developer-view-only
+spec:
+  rules:
+    - functionResourceRef: views-acp-userview
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-portal
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: views-projectview
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-productlist
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: product-management
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-projectmanage
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-projectbinding
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: infrastructure-clusters
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: acp-namespaces
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-accesstokeninfoes
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: infrastructure-moduleinfo
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: acp-namespaceoverviews
+      verbs:
+        - get
+        - list
+        - watch
