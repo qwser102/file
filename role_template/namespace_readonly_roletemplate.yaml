@@ -7,7 +7,7 @@ metadata:
     auth.cpaas.io/roletemplate.level: namespace
     auth.cpaas.io/roletemplate.official: "false"
     rbac.cpaas.io/version: v1
-  name: namespace_developer-view-only
+  name: namespace-developer-view-only
 spec:
   rules:
     - functionResourceRef: views-acp-userview
