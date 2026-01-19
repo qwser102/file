@@ -6,7 +6,7 @@ metadata:
     auth.cpaas.io/roletemplate.hidden: "false"
     auth.cpaas.io/roletemplate.level: namespace
     auth.cpaas.io/roletemplate.official: "false"
-    rbac.cpaas.io/version: v2
+    rbac.cpaas.io/version: v1
   name: namespace_developer-view-only
 spec:
   rules:
