@@ -1,0 +1,49 @@
+apiVersion: cluster.alauda.io/v1alpha1
+kind: ModuleInfo
+metadata:
+  annotations:
+    cpaas.io/display-name: logagent
+    cpaas.io/module-name: '{"en": "Alauda Container Platform Log Collector", "zh":
+      "Alauda Container Platform Log Collector"}'
+  creationTimestamp: "2025-11-19T01:31:58Z"
+  finalizers:
+  - moduleinfo
+  generation: 4
+  labels:
+    cpaas.io/cluster-name: acpsit1
+    cpaas.io/lifecycle-type: agnostic
+    cpaas.io/module-name: logagent
+    cpaas.io/module-type: plugin
+    cpaas.io/product: Platform-Center
+    create-by: cluster-transformer
+    logclickhouse.plugins.cpaas.io/cluster: acpsit1
+    manage-delete-by: cluster-transformer
+    manage-update-by: cluster-transformer
+  name: acpsit1-281d699fd86c709a81a5ede8c1b7251a
+  ownerReferences:
+  - apiVersion: platform.tkestack.io/v1
+    kind: Cluster
+    name: acpsit1
+    uid: f30c9892-c4e5-4446-82c4-8b739a2ce06b
+  resourceVersion: "109386461"
+  uid: 7b3a3478-698e-4542-8932-784b4daea276
+spec:
+  config:
+    crossClusterDependency:
+      logcenter: global
+      logclickhouse: acpsit1
+    dataSource:
+      audit: true
+      event: true
+      kubernetes: true
+      platform: true
+      system: true
+      workload: true
+    storage:
+      type: ClickHouse
+  valuesOverride:
+    chart-alauda-log-agent:
+      nevermore:
+        dataDirName: /var/cpaas/
+        systemLogFromJournal: true
+  version: v4.1.1
