@@ -1,0 +1,2 @@
+ local token
+  token=$(kubectl get secret -ncpaas-system tke-cluster-global -o jsonpath='{.data.token}' | base64 -d)
