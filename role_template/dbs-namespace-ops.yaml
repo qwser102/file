@@ -10,31 +10,76 @@ metadata:
   name: dbs-namespace-ops
 spec:
   customRules:
-    - apiGroups: [""]
-      resources: ["configmaps"]
-      verbs: ["create", "update", "delete","patch"]
-    - apiGroups: ["","apps","batch","extensions"]
-      resources: ["pods","pods/attach","pods/exec","pods/log","pods/portforward"]
-      verbs: ["create","describe","delete"]
-    - apiGroups: ["autoscaling"]
-      resources: ["horizontalpodautoscalers"]
-      verbs: ["patch","update"]
-    - apiGroups: ["tkestack.io"]
-      resources: ["cronhpas"]
-      verbs: ["patch","update"]
-    - apiGroups: ["monitoring.coreos.com"]
-      resources: ["prometheusrules"]
-      verbs: ["patch","update"]
-    - apiGroups: ["extensions","networking.k8s.io"]
-      resources: ["ingresses","ingresses/status"]
-      verbs: ["patch","update","create"]
-    - apiGroups: ["networking.istio.io"]
-      resources: ["virtualservices"]
-      verbs: ["patch","update"]
-    - apiGroups: [""]
-      resources: ["replicationcontrollers"]
-      verbs: ["delete"]
-    - apiGroups: [""]
+    - apiGroups:
+        - ""
+      resources:
+        - configmaps
+      verbs:
+        - create
+        - update
+        - delete
+        - patch
+    - apiGroups:
+        - ""
+        - apps
+        - batch
+        - extensions
+      resources:
+        - pods
+        - pods/attach
+        - pods/exec
+        - pods/log
+        - pods/portforward
+      verbs:
+        - create
+        - describe
+        - delete
+    - apiGroups:
+        - autoscaling
+      resources:
+        - horizontalpodautoscalers
+      verbs:
+        - patch
+        - update
+    - apiGroups:
+        - tkestack.io
+      resources:
+        - cronhpas
+      verbs:
+        - patch
+        - update
+    - apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - prometheusrules
+      verbs:
+        - patch
+        - update
+    - apiGroups:
+        - extensions
+        - networking.k8s.io
+      resources:
+        - ingresses
+        - ingresses/status
+      verbs:
+        - patch
+        - update
+        - create
+    - apiGroups:
+        - networking.istio.io
+      resources:
+        - virtualservices
+      verbs:
+        - patch
+        - update
+    - apiGroups:
+        - ""
+      resources:
+        - replicationcontrollers
+      verbs:
+        - delete
+    - apiGroups:
+        - ""
       resources:
         - services
         - services/status
@@ -51,8 +96,12 @@ spec:
         - replicationcontrollers/status
         - replicationcontrollers/scale
         - events
-      verbs: ["get", "list", "watch"]  
-    - apiGroups: ["apps"]
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - apps
       resources:
         - deployments
         - deployments/status
@@ -72,29 +121,45 @@ spec:
         - daemonsets/scale
         - daemonsets/rollback
         - daemonsets/finalizers
-      verbs: ["get", "list", "watch"]
-    - apiGroups: ["batch"]
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - batch
       resources:
         - jobs
         - jobs/status
         - cronjobs
         - cronjobs/status
         - cronjobs/finalizers
-      verbs: ["get", "list", "watch"]
-    - apiGroups: ["networking.k8s.io"]
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - networking.k8s.io
       resources:
         - networkpolicies
         - networkpolicies/status
         - ingresses
         - ingresses/status
         - ingressclasses
-      verbs: ["get", "list", "watch"]
-    - apiGroups: ["policy"]
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - policy
       resources:
         - poddisruptionbudgets
         - poddisruptionbudgets/status
-      verbs: ["get", "list", "watch"]
-    - apiGroups: ["extensions"]
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - extensions
       resources:
         - deployments
         - deployments/status
@@ -107,7 +172,10 @@ spec:
         - ingresses
         - ingresses/status
         - ingressclasses
-      verbs: ["get", "list", "watch"]  
+      verbs:
+        - get
+        - list
+        - watch
   rules:
     - functionResourceRef: views-acp-userview
       verbs:
@@ -190,4 +258,4 @@ spec:
       verbs:
         - get
         - list
-        - watch  
+        - watch
