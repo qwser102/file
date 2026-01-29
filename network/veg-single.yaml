@@ -14,7 +14,7 @@ spec:
   externalSubnet: macvlan
   nodeSelector:
   - matchExpressions:
-    - key: node-role.kubernetes.io/egress
+    - key: egress
       operator: In
       values:
       - ""
