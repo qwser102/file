@@ -368,7 +368,6 @@ spec:
         - artifacts 
         - artifactversions 
       verbs: ["get", "list", "watch"]
-  
     - apiGroups: ["ace3.alauda.io"]
       resources: 
         - productions
