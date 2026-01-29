@@ -360,6 +360,19 @@ spec:
         - get
         - list
         - watch
+    - apiGroups: ["app.alauda.io"]
+      resources: 
+        - charts
+        - chartrepos  
+        - releases
+        - artifacts 
+        - artifactversions 
+      verbs: ["get", "list", "watch"]
+  
+    - apiGroups: ["ace3.alauda.io"]
+      resources: 
+        - productions
+      verbs: ["get", "list", "watch"]      
   rules:
     - functionResourceRef: views-acp-userview
       verbs:
