@@ -70,6 +70,10 @@ spec:
           operator: In
           values:
             - ""
+  tolerations:
+    - key: node-role.kubernetes.io/infra
+      operator: Exists
+      effect: NoSchedule
   selectors:
     - namespaceSelector:
         matchLabels:
