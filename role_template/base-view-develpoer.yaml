@@ -9,6 +9,10 @@ metadata:
     rbac.cpaas.io/version: v1
   name: namespace-developer-view-only
 spec:
+  customRules:
+    - apiGroups: [""]
+      resources: ["configmaps"]
+      verbs: ["get", "list", "watch"]
   rules:
     - functionResourceRef: views-acp-userview
       verbs:
