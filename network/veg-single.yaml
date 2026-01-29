@@ -1,0 +1,27 @@
+apiVersion: kubeovn.io/v1
+kind: VpcEgressGateway
+metadata:
+  name: runocp-automation-egressips
+  namespace: kube-system
+spec:
+  bfd:
+    enabled: true
+    minRX: 100
+    minTX: 100
+    multiplier: 5
+  externalIPs:
+  - 10.91.176.200
+  externalSubnet: macvlan
+  nodeSelector:
+  - matchExpressions:
+    - key: node-role.kubernetes.io/egress
+      operator: In
+      values:
+      - ""
+  replicas: 1
+  selectors:
+  - namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: runocp-automation
+  trafficPolicy: Cluster
+  vpc: ovn-cluster
