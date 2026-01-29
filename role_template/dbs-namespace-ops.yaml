@@ -19,6 +19,9 @@ spec:
         - update
         - delete
         - patch
+        - get
+        - watch
+        - list
     - apiGroups:
         - ""
         - apps
@@ -34,6 +37,9 @@ spec:
         - create
         - describe
         - delete
+        - get
+        - watch
+        - list
     - apiGroups:
         - autoscaling
       resources:
@@ -41,6 +47,9 @@ spec:
       verbs:
         - patch
         - update
+        - get
+        - watch
+        - list
     - apiGroups:
         - tkestack.io
       resources:
@@ -48,6 +57,9 @@ spec:
       verbs:
         - patch
         - update
+        - get
+        - watch
+        - list
     - apiGroups:
         - monitoring.coreos.com
       resources:
@@ -55,6 +67,9 @@ spec:
       verbs:
         - patch
         - update
+        - get
+        - watch
+        - list
     - apiGroups:
         - extensions
         - networking.k8s.io
@@ -65,6 +80,9 @@ spec:
         - patch
         - update
         - create
+        - get
+        - watch
+        - list
     - apiGroups:
         - networking.istio.io
       resources:
@@ -72,6 +90,9 @@ spec:
       verbs:
         - patch
         - update
+        - get
+        - watch
+        - list
     - apiGroups:
         - ""
       resources:
@@ -174,74 +195,171 @@ spec:
         - ingressclasses
       verbs:
         - get
+        - list - watch
+    - apiGroups:
+        - ait.alauda.io
+      resources:
+        - notificationgroups
+        - notificationtemplates
+        - notifications
+        - monitordashboards
+        - dashboards
+      verbs:
+        - get
         - list
         - watch
-  - apiGroups: ["ait.alauda.io"]
-    resources: ["notificationgroups", "notificationtemplates", "notifications", "monitordashboards", "dashboards"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["aiops.alauda.io"]
-    resources: 
-      - notificationservers
-      - notificationtemplates
-      - alerttemplates
-      - alerthistories
-      - events
-      - archivelogs
-      - logs
-      - audits
-      - namespaceaudits
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["aitextensions.alauda.io"]
-    resources: ["notificationmessages"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["monitoring.coreos.com"]
-    resources: 
-      - prometheusrules
-      - servicemonitors
-      - probes
-      - prometheuses
-      - podmonitors
-      - alertmanagers
-    verbs: ["get", "list", "watch"]
-  - apiGroups: [""]
-    resources: ["services", "services/proxy", "serviceaccounts"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["events.alauda.io"]
-    resources: ["events"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["logging.alauda.io", "audits.alauda.io"]
-    resources: ["logs", "audits"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["audits.alauda.io"]
-    resources: ["audits"]
-    verbs: ["get", "list", "watch"]    
-  - apiGroups: ["monitoring.alauda.io"]
-    resources: ["metrics"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["app.alauda.io"]
-    resources: ["helmrequests", "helmrequests/status", "charts", "releases"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["build.alauda.io"]
-    resources: ["builds", "buildruns", "builderimagecategories"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["app.k8s.io"]
-    resources: ["*"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["apps.tkestack.io"]
-    resources: ["tapps"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["k8s.io"]
-    resources: ["namespaceoverviews"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["batch.alauda.io"]
-    resources: ["batchactions", "batchaction/status"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["packages.operators.coreos.com"]
-    resources: ["packagemanifests"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["operators.coreos.com"]
-    resources: ["clusterserviceversions", "subscriptions"]
-    verbs: ["get", "list", "watch"]
+    - apiGroups:
+        - aiops.alauda.io
+      resources:
+        - notificationservers
+        - notificationtemplates
+        - alerttemplates
+        - alerthistories
+        - events
+        - archivelogs
+        - logs
+        - audits
+        - namespaceaudits
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - aitextensions.alauda.io
+      resources:
+        - notificationmessages
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - prometheusrules
+        - servicemonitors
+        - probes
+        - prometheuses
+        - podmonitors
+        - alertmanagers
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - ""
+      resources:
+        - services
+        - services/proxy
+        - serviceaccounts
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - events.alauda.io
+      resources:
+        - events
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - logging.alauda.io
+        - audits.alauda.io
+      resources:
+        - logs
+        - audits
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - audits.alauda.io
+      resources:
+        - audits
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - monitoring.alauda.io
+      resources:
+        - metrics
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - app.alauda.io
+      resources:
+        - helmrequests
+        - helmrequests/status
+        - charts
+        - releases
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - build.alauda.io
+      resources:
+        - builds
+        - buildruns
+        - builderimagecategories
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - app.k8s.io
+      resources:
+        - "*"
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - apps.tkestack.io
+      resources:
+        - tapps
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - k8s.io
+      resources:
+        - namespaceoverviews
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - batch.alauda.io
+      resources:
+        - batchactions
+        - batchaction/status
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - packages.operators.coreos.com
+      resources:
+        - packagemanifests
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - operators.coreos.com
+      resources:
+        - clusterserviceversions
+        - subscriptions
+      verbs:
+        - get
+        - list
+        - watch
   rules:
     - functionResourceRef: views-acp-userview
       verbs:
@@ -249,11 +367,6 @@ spec:
         - list
         - watch
     - functionResourceRef: platform-manage-portal
-      verbs:
-        - get
-        - list
-        - watch
-    - functionResourceRef: views-projectview
       verbs:
         - get
         - list
