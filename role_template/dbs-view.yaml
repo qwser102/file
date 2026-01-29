@@ -1,0 +1,430 @@
+apiVersion: auth.alauda.io/v1beta1
+kind: RoleTemplate
+metadata:
+  labels:
+    auth.cpaas.io/roletemplate.frozen: "false"
+    auth.cpaas.io/roletemplate.hidden: "false"
+    auth.cpaas.io/roletemplate.level: namespace
+    auth.cpaas.io/roletemplate.official: "false"
+    rbac.cpaas.io/version: v1
+  name: dbs-namespace-ops
+spec:
+  customRules:
+    - apiGroups:
+        - ""
+      resources:
+        - configmaps
+      verbs:
+        - get
+        - watch
+        - list
+    - apiGroups:
+        - ""
+        - apps
+        - batch
+        - extensions
+      resources:
+        - pods
+        - pods/attach
+        - pods/exec
+        - pods/log
+        - pods/portforward
+      verbs:
+        - describe
+        - get
+        - watch
+        - list
+    - apiGroups:
+        - autoscaling
+      resources:
+        - horizontalpodautoscalers
+      verbs:
+        - get
+        - watch
+        - list
+    - apiGroups:
+        - tkestack.io
+      resources:
+        - cronhpas
+      verbs:
+        - get
+        - watch
+        - list
+    - apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - prometheusrules
+      verbs:
+        - get
+        - watch
+        - list
+    - apiGroups:
+        - extensions
+        - networking.k8s.io
+      resources:
+        - ingresses
+        - ingresses/status
+      verbs:
+        - get
+        - watch
+        - list
+    - apiGroups:
+        - networking.istio.io
+      resources:
+        - virtualservices
+      verbs:
+        - get
+        - watch
+        - list
+    - apiGroups:
+        - ""
+      resources:
+        - services
+        - services/status
+        - services/proxy
+        - pods
+        - pods/status
+        - pods/log
+        - pods/exec
+        - pods/portforward
+        - persistentvolumeclaims
+        - persistentvolumeclaims/status
+        - endpoints
+        - replicationcontrollers
+        - replicationcontrollers/status
+        - replicationcontrollers/scale
+        - events
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - apps
+      resources:
+        - deployments
+        - deployments/status
+        - deployments/scale
+        - deployments/rollback
+        - deployments/finalizers
+        - statefulsets
+        - statefulsets/status
+        - statefulsets/scale
+        - statefulsets/rollback
+        - statefulsets/finalizers
+        - replicasets
+        - replicasets/status
+        - replicasets/scale
+        - daemonsets
+        - daemonsets/status
+        - daemonsets/scale
+        - daemonsets/rollback
+        - daemonsets/finalizers
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - batch
+      resources:
+        - jobs
+        - jobs/status
+        - cronjobs
+        - cronjobs/status
+        - cronjobs/finalizers
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - networking.k8s.io
+      resources:
+        - networkpolicies
+        - networkpolicies/status
+        - ingresses
+        - ingresses/status
+        - ingressclasses
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - policy
+      resources:
+        - poddisruptionbudgets
+        - poddisruptionbudgets/status
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - extensions
+      resources:
+        - deployments
+        - deployments/status
+        - deployments/finalizers
+        - replicasets
+        - replicasets/status
+        - daemonsets
+        - daemonsets/status
+        - daemonsets/finalizers
+        - ingresses
+        - ingresses/status
+        - ingressclasses
+      verbs:
+        - get
+        - list 
+        - watch
+    - apiGroups:
+        - ait.alauda.io
+      resources:
+        - notificationgroups
+        - notificationtemplates
+        - notifications
+        - monitordashboards
+        - dashboards
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - aiops.alauda.io
+      resources:
+        - notificationservers
+        - notificationtemplates
+        - alerttemplates
+        - alerthistories
+        - events
+        - archivelogs
+        - logs
+        - audits
+        - namespaceaudits
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - aitextensions.alauda.io
+      resources:
+        - notificationmessages
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - prometheusrules
+        - servicemonitors
+        - probes
+        - prometheuses
+        - podmonitors
+        - alertmanagers
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - ""
+      resources:
+        - services
+        - services/proxy
+        - serviceaccounts
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - events.alauda.io
+      resources:
+        - events
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - logging.alauda.io
+        - audits.alauda.io
+      resources:
+        - logs
+        - audits
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - audits.alauda.io
+      resources:
+        - audits
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - monitoring.alauda.io
+      resources:
+        - metrics
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - app.alauda.io
+      resources:
+        - helmrequests
+        - helmrequests/status
+        - charts
+        - releases
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - build.alauda.io
+      resources:
+        - builds
+        - buildruns
+        - builderimagecategories
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - app.k8s.io
+      resources:
+        - "*"
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - apps.tkestack.io
+      resources:
+        - tapps
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - k8s.io
+      resources:
+        - namespaceoverviews
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - batch.alauda.io
+      resources:
+        - batchactions
+        - batchaction/status
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - packages.operators.coreos.com
+      resources:
+        - packagemanifests
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - operators.coreos.com
+      resources:
+        - clusterserviceversions
+        - subscriptions
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups: ["app.alauda.io"]
+      resources: 
+        - charts
+        - chartrepos  
+        - releases
+        - artifacts 
+        - artifactversions 
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["ace3.alauda.io"]
+      resources: 
+        - productions
+      verbs: ["get", "list", "watch"]      
+  rules:
+    - functionResourceRef: views-acp-userview
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-portal
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-productlist
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: product-management
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-projectmanage
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-projectbinding
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: infrastructure-clusters
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: acp-namespaces
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: platform-manage-accesstokeninfoes
+      verbs:
+        - get
+        - list
+        - watch
+        - create
+        - delete
+    - functionResourceRef: infrastructure-moduleinfo
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: acp-namespaceoverviews
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: asm-manualgrayevents
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: asm-manualgrayreleases
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: asm-opentelemetrycollectors
+      verbs:
+        - get
+        - list
+        - watch
+    - functionResourceRef: asm-instrumentations
+      verbs:
+        - get
+        - list
+        - watch
