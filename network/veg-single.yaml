@@ -18,6 +18,10 @@ spec:
       operator: In
       values:
       - ""
+  tolerations:
+    - key: node-role.kubernetes.io/infra
+      operator: Exists
+      effect: NoSchedule
   replicas: 1
   selectors:
   - namespaceSelector:
